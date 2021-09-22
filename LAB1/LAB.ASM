@@ -1,8 +1,11 @@
+        %include '../INCLUDES/MACROS.ASM'
+
         org 100h
-        mov dx, msg
-        mov ah, 9
-        int 21h
-        mov ah, 4Ch
-        int 21h
+
+        section .text
+        prints msg
+        exit 0
+
+        section .data
 msg:
-        db 'Hello, World!',10,13,'$'
+        db 'Hello, World!', 10, 13, '$'
