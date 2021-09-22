@@ -1,0 +1,11 @@
+        %macro prints 1
+        mov dx, %1
+        mov ah, 9
+        int 21h
+        %endmacro
+
+        %macro exit 1
+        mov al, %1
+        mov ah, 4ch
+        int 21h
+        %endmacro
