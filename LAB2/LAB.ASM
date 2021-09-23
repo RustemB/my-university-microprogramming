@@ -1,12 +1,21 @@
-; *******************************************************
-; *                                                     *
-; * can't multiply big numbers, try to use 2-digit nums *
-; *                                                     *
-; *******************************************************
-
         %include '../INCLUDES/MACROS.ASM'
+        
         %define N 5
+        
+        %macro printi 1
+        push ax
+        mov ax, %1
+        call print_integer
+        pop ax
+        %endmacro
 
+        %macro printa 1
+        push bx
+        mov bx, %1
+        call print_arr
+        pop bx
+        %endmacro
+        
         org 100h
 
         section .text
@@ -15,41 +24,36 @@ start:
         call random
 
         prints msg_arr1
-        mov bx, arr1
-        call print_arr
+        printa arr1
         printnl
 
         prints msg_arr2
-        mov bx, arr2
-        call print_arr
+        printa arr2
         printnl
 
         printnl
 
         call sum_arrs
         prints msg_sum
-        mov bx, arr_res
-        call print_arr
+        printa arr_res
         printnl
 
-        prints msg_sub
         call sub_arrs
-        mov bx, arr_res
-        call print_arr
+        prints msg_sub
+        printa arr_res
         printnl
 
-        prints msg_mul
         call mul_arrs
-        mov bx, arr_res
-        call print_arr
+        prints msg_mul
+        printa arr_res
         printnl
 
-        prints msg_div
         call div_arrs
-        mov bx, arr_res
-        call print_arr
+        prints msg_div
+        printa arr_res
         printnl
-        exit 0h
+
+        exit 0
 
 print_arr:
         mov al, N
@@ -120,6 +124,10 @@ print_integer:
         push dx
         xor cx, cx
         xor dx, dx
+        cmp ax, 0
+        jne loop1
+        printd 0
+        jmp _exit
 loop1:
         cmp ax, 0
         jge skp
@@ -198,7 +206,13 @@ fillloopdiv:
         mov ax, arr1[si]
         mov bx, arr2[si]
         xor dx, dx
+        cmp bx, 0
+        jne _dodiv
+        mov ax, -1
+        jmp _nodiv
+_dodiv:
         div bx
+_nodiv:
         mov arr_res[si], ax
         inc si
         inc si
