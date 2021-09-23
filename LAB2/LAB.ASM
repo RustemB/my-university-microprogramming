@@ -45,10 +45,9 @@ start:
         printnl
 
         prints msg_div
-        ;call div_arrs
-        ;mov bx, arr_res
-        ;call print_arr
-        printc '?'
+        call div_arrs
+        mov bx, arr_res
+        call print_arr
         printnl
         exit 0h
 
@@ -99,7 +98,12 @@ _loop:
         mov bh, bl
         shl bh, 1
         xor al, bh
-        mov two_arrays[si], ax
+        pusha
+        xor dx, dx
+        mov bx, 100
+        div bx
+        mov two_arrays[si], dx
+        popa
         inc si
         inc si
         cmp ah, 0
@@ -118,6 +122,10 @@ print_integer:
         xor dx, dx
 loop1:
         cmp ax, 0
+        jge skp
+        neg ax
+        printc '-'
+skp:
         je print1
         mov bx, 10
         div bx
@@ -183,14 +191,14 @@ fillloopmul:
         jne fillloopmul
         ret
 
-; TODO: why not works?
 div_arrs:
         mov si, 0
         mov cx, 0
 fillloopdiv:
         mov ax, arr1[si]
         mov bx, arr2[si]
-        idiv bx
+        xor dx, dx
+        div bx
         mov arr_res[si], ax
         inc si
         inc si
