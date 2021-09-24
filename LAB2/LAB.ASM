@@ -1,7 +1,9 @@
+; TODO: implement correct round floats
+; TODO: correct handle ZERO_DIVISION
         %include '../INCLUDES/MACROS.ASM'
-        
+
         %define N 5
-        
+
         %macro printi 1
         push ax
         mov ax, %1
@@ -9,13 +11,16 @@
         pop ax
         %endmacro
 
-        %macro printa 1
+        %macro printa 2
         push bx
+        push dx
         mov bx, %1
+        mov dx, %2
         call print_arr
+        pop dx
         pop bx
         %endmacro
-        
+
         org 100h
 
         section .text
@@ -24,33 +29,33 @@ start:
         call random
 
         prints msg_arr1
-        printa arr1
+        printa arr1, print_integer
         printnl
 
         prints msg_arr2
-        printa arr2
+        printa arr2, print_integer
         printnl
 
         printnl
 
         call sum_arrs
         prints msg_sum
-        printa arr_res
+        printa arr_res, print_integer
         printnl
 
         call sub_arrs
         prints msg_sub
-        printa arr_res
+        printa arr_res, print_integer
         printnl
 
         call mul_arrs
         prints msg_mul
-        printa arr_res
+        printa arr_res, print_integer
         printnl
 
         call div_arrs
         prints msg_div
-        printa arr_res
+        printa arr_res, print_float
         printnl
 
         exit 0
@@ -63,7 +68,7 @@ _loopmain:
         dec al
         push ax
         mov ax, bx[si]
-        call print_integer
+        call dx
         pop ax
         inc si
         inc si
@@ -93,8 +98,7 @@ _loop:
         xor bl, dh
         mov dh, dl
         mov dl, cl
-        mov cl, al
-        mov al, cl
+        xchg cl, al
         xor al, bl
         mov bh, cl
         shr bh, 3
@@ -116,6 +120,19 @@ _loop:
         pop dx
         pop cx
         pop bx
+        ret
+
+print_float:
+        push dx
+        push bx
+        xor dx, dx
+        mov bx, 10
+        div bx
+        printi ax
+        printc '.'
+        printi dx
+        pop bx
+        pop dx
         ret
 
 print_integer:
@@ -205,15 +222,18 @@ div_arrs:
 fillloopdiv:
         mov ax, arr1[si]
         mov bx, arr2[si]
+        mov dx, 10
+        mul dx
         xor dx, dx
         cmp bx, 0
         jne _dodiv
-        mov ax, -1
+        mov ax, 0
         jmp _nodiv
 _dodiv:
         div bx
 _nodiv:
         mov arr_res[si], ax
+_enddiv:
         inc si
         inc si
         inc cx
