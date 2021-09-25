@@ -70,7 +70,7 @@ print_arr:                             ; function to print array
         mov al, N                      ; count of elems in array (`n')
         mov si, 0                      ; index (`i')
         printc '['
-_loopmain:
+.loop:
         dec al                         ; n--
         push ax
         mov ax, bx[si]                 ; print element
@@ -79,11 +79,11 @@ _loopmain:
         inc si                         ; i++
         inc si                         ; (we use word size)
         cmp al, 0                      ; if it's last element
-        jz _endarr                     ; we do not print comma and space
+        jz .endarr                     ; we do not print comma and space
         printc ','
         printc ' '
-        jmp _loopmain
-_endarr:
+        jmp .loop
+.endarr:
         printc ']'
         ret
 
@@ -97,7 +97,7 @@ random:                                ; procedure to fill two arrays with rando
         inc al
         mov ah, two_arrays_total_elements_count
         mov si, 0
-_loop:
+.loop:
         dec ah
         mov bl, dh
         shr bl, 1
@@ -121,7 +121,7 @@ _loop:
         inc si
         inc si
         cmp ah, 0
-        jnz _loop
+        jnz .loop
 
         pop dx
         pop cx
@@ -148,30 +148,30 @@ print_integer:                         ; print signed integer
         xor cx, cx                     ; then pop and print digit with macro printd
         xor dx, dx
         cmp ax, 0
-        jne loop1
+        jne .loop
         printd 0
-        jmp _exit
-loop1:
+        jmp .exit
+.loop:
         cmp ax, 0
-        jge skp
+        jge .skip
         neg ax                         ; if number is < 0, negate it
         printc '-'                     ; and print minus char
-skp:
-        je print1
+.skip:
+        je .print
         mov bx, 10
         div bx
         push dx
         inc cx
         xor dx, dx
-        jmp loop1
-print1:
+        jmp .loop
+.print:
         cmp cx, 0
-        je _exit
+        je .exit
         pop dx
         printd dl
         dec cx
-        jmp print1
-_exit:
+        jmp .print
+.exit:
         pop dx
         pop cx
         pop bx
@@ -180,7 +180,7 @@ _exit:
 sum_arrs:
         mov si, 0
         mov cx, 0
-fillloopsum:
+.fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
         add ax, bx
@@ -189,13 +189,13 @@ fillloopsum:
         inc si
         inc cx
         cmp cx, N
-        jne fillloopsum
+        jne .fillloop
         ret
 
 sub_arrs:
         mov si, 0
         mov cx, 0
-fillloopsub:
+.fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
         sub ax, bx
@@ -204,13 +204,13 @@ fillloopsub:
         inc si
         inc cx
         cmp cx, N
-        jne fillloopsub
+        jne .fillloop
         ret
 
 mul_arrs:
         mov si, 0
         mov cx, 0
-fillloopmul:
+.fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
         mul bx
@@ -219,32 +219,31 @@ fillloopmul:
         inc si
         inc cx
         cmp cx, N
-        jne fillloopmul
+        jne .fillloop
         ret
 
 div_arrs:
         mov si, 0
         mov cx, 0
-fillloopdiv:
+.fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
         mov dx, 10
         mul dx                         ; store float in array as (nu * 10) / de
         xor dx, dx                     ; for easy storing in memmory
         cmp bx, 0                      ; and printing
-        jne _dodiv
+        jne .dodiv
         mov ax, 0
-        jmp _nodiv
-_dodiv:
+        jmp .nodiv
+.dodiv:
         div bx
-_nodiv:
+.nodiv:
         mov arr_res[si], ax
-_enddiv:
         inc si
         inc si
         inc cx
         cmp cx, N
-        jne fillloopdiv
+        jne .fillloop
         ret
 
         section .data
