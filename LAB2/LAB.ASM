@@ -10,11 +10,11 @@
         pop ax
         %endmacro
 
-        %macro printa 2                ; prints array in `bx'
+        %macro printa 1-2 _integer     ; prints array in `bx'
         push bx
         push dx
         mov bx, %1
-        mov dx, %2
+        mov dx, print%[%2]
         call print_arr
         pop dx
         pop bx
@@ -29,12 +29,12 @@ start:
 
 ; print `arr1'
         prints msg_arr1
-        printa arr1, print_integer
+        printa arr1
         printnl
 
 ; print `arr2'
         prints msg_arr2
-        printa arr2, print_integer
+        printa arr2
         printnl
 
         printnl
@@ -42,28 +42,28 @@ start:
 ; print sum of two arrays
         call sum_arrs
         prints msg_sum
-        printa arr_res, print_integer
+        printa arr_res
         printnl
 
 ; print sub of two arrays
         call sub_arrs
         prints msg_sub
-        printa arr_res, print_integer
+        printa arr_res
         printnl
 
 ; print mul of two arrays
         call mul_arrs
         prints msg_mul
-        printa arr_res, print_integer
+        printa arr_res
         printnl
 
 ; print division of two arrays
         call div_arrs
         prints msg_div
-        printa arr_res, print_float
+        printa arr_res, _float
         printnl
 
-        exit 0
+        exit
 
 print_arr:                             ; function to print array
         mov al, N                      ; count of elems in array (`n')
@@ -79,8 +79,7 @@ print_arr:                             ; function to print array
         inc si                         ; (we use word size)
         cmp al, 0                      ; if it's last element
         jz .endarr                     ; we do not print comma and space
-        printc ','
-        printc ' '
+        printc ',', ' '
         jmp .loop
 .endarr:
         printc ']'
