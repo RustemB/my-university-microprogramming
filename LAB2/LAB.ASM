@@ -1,8 +1,8 @@
 ; TODO: implement correct round floats
-; TODO: correct handle ZERO_DIVISION
         %include '../INCLUDES/MACROS.ASM'
 
         %define N 5
+        %define Inf (99*99)
 
         %macro printi 1                ; prints integer in `ax'
         push ax
@@ -130,13 +130,19 @@ random:                                ; procedure to fill two arrays with rando
 
 print_float:                           ; print float with one digit after point
         push dx                        ; in memmory it's represent's as (float * 10)
-        push bx
+        push bx ; 9801 used to Infinity (Inf), as it can't be this value in this task
+        cmp ax, Inf ; max value can be = 99.0 (990)
+        jne .notinf
+        prints is_infinity
+        jmp .end
+        .notinf:
         xor dx, dx
         mov bx, 10
         div bx
         printi ax                      ; print ceil part
         printc '.'
         printi dx                      ; print fraction part
+.end:
         pop bx
         pop dx
         ret
@@ -233,7 +239,7 @@ div_arrs:
         xor dx, dx                     ; for easy storing in memmory
         cmp bx, 0                      ; and printing
         jne .dodiv
-        mov ax, 0
+        mov ax, Inf
         jmp .nodiv
 .dodiv:
         div bx
@@ -259,6 +265,8 @@ msg_arr1:
         db 'Array1 is $'
 msg_arr2:
         db 'Array2 is $'
+is_infinity:
+        db 'Inf$'
 
         section .bss
 two_arrays:
