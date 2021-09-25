@@ -79,7 +79,7 @@ print_arr:                             ; function to print array
         inc si                         ; (we use word size)
         cmp al, 0                      ; if it's last element
         jz .endarr                     ; we do not print comma and space
-        printc ',', ' '
+        printc 44, 32                  ; comma + space
         jmp .loop
 .endarr:
         printc ']'
