@@ -130,12 +130,12 @@ random:                                ; procedure to fill two arrays with rando
 
 print_float:                           ; print float with one digit after point
         push dx                        ; in memmory it's represent's as (float * 10)
-        push bx ; 9801 used to Infinity (Inf), as it can't be this value in this task
-        cmp ax, Inf ; max value can be = 99.0 (990)
+        push bx                        ; 9801 used to Infinity (Inf), as it can't be this value in this task
+        cmp ax, Inf                    ; max value can be = 99.0 (990)
         jne .notinf
         prints is_infinity
         jmp .end
-        .notinf:
+.notinf:
         xor dx, dx
         mov bx, 10
         div bx
