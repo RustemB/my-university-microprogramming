@@ -3,7 +3,7 @@
         %ifndef N
         %define N 5
         %endif
-        
+
         %define Inf (99*99)
 
         %macro printi 1                ; prints integer in `ax'
@@ -70,7 +70,7 @@ start:
 
 print_arr:                             ; function to print array
         mov al, N                      ; count of elems in array (`n')
-        xor si, si                      ; index (`i')
+        xor si, si                     ; index (`i')
         printc '['
 .loop:
         dec al                         ; n--
