@@ -1,4 +1,3 @@
-; TODO: implement correct round floats
         %include '../INCLUDES/MACROS.ASM'
 
         %define N 5
