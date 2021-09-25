@@ -1,6 +1,9 @@
         %include '../INCLUDES/MACROS.ASM'
 
+        %ifndef N
         %define N 5
+        %endif
+        
         %define Inf (99*99)
 
         %macro printi 1                ; prints integer in `ax'
