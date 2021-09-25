@@ -70,7 +70,7 @@ start:
 
 print_arr:                             ; function to print array
         mov al, N                      ; count of elems in array (`n')
-        mov si, 0                      ; index (`i')
+        xor si, si                      ; index (`i')
         printc '['
 .loop:
         dec al                         ; n--
@@ -97,7 +97,7 @@ random:                                ; procedure to fill two arrays with rando
         xor ax, ax
         inc al
         mov ah, two_arrays_total_elements_count
-        mov si, 0
+        xor si, si
 .loop:
         dec ah
         mov bl, dh
@@ -185,8 +185,8 @@ print_integer:                         ; print signed integer
         ret
 
 sum_arrs:
-        mov si, 0
-        mov cx, 0
+        xor si, si
+        xor cx, cx
 .fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
@@ -200,8 +200,8 @@ sum_arrs:
         ret
 
 sub_arrs:
-        mov si, 0
-        mov cx, 0
+        xor si, si
+        xor cx, cx
 .fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
@@ -215,8 +215,8 @@ sub_arrs:
         ret
 
 mul_arrs:
-        mov si, 0
-        mov cx, 0
+        xor si, si
+        xor cx, cx
 .fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
@@ -230,8 +230,8 @@ mul_arrs:
         ret
 
 div_arrs:
-        mov si, 0
-        mov cx, 0
+        xor si, si
+        xor cx, cx
 .fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
