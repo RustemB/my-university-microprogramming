@@ -4,14 +4,14 @@
 
         %define N 5
 
-        %macro printi 1
+        %macro printi 1                ; prints integer in `ax'
         push ax
         mov ax, %1
         call print_integer
         pop ax
         %endmacro
 
-        %macro printa 2
+        %macro printa 2                ; prints array in `bx'
         push bx
         push dx
         mov bx, %1
@@ -26,33 +26,39 @@
         section .text
 
 start:
-        call random
+        call random                    ; fill `arr1' and `arr2' with random values
 
+; print `arr1'
         prints msg_arr1
         printa arr1, print_integer
         printnl
 
+; print `arr2'
         prints msg_arr2
         printa arr2, print_integer
         printnl
 
         printnl
 
+; print sum of two arrays
         call sum_arrs
         prints msg_sum
         printa arr_res, print_integer
         printnl
 
+; print sub of two arrays
         call sub_arrs
         prints msg_sub
         printa arr_res, print_integer
         printnl
 
+; print mul of two arrays
         call mul_arrs
         prints msg_mul
         printa arr_res, print_integer
         printnl
 
+; print division of two arrays
         call div_arrs
         prints msg_div
         printa arr_res, print_float
@@ -60,20 +66,20 @@ start:
 
         exit 0
 
-print_arr:
-        mov al, N
-        mov si, 0
+print_arr:                             ; function to print array
+        mov al, N                      ; count of elems in array (`n')
+        mov si, 0                      ; index (`i')
         printc '['
 _loopmain:
-        dec al
+        dec al                         ; n--
         push ax
-        mov ax, bx[si]
-        call dx
+        mov ax, bx[si]                 ; print element
+        call dx                        ; with provided function
         pop ax
-        inc si
-        inc si
-        cmp al, 0
-        jz _endarr
+        inc si                         ; i++
+        inc si                         ; (we use word size)
+        cmp al, 0                      ; if it's last element
+        jz _endarr                     ; we do not print comma and space
         printc ','
         printc ' '
         jmp _loopmain
@@ -81,11 +87,11 @@ _endarr:
         printc ']'
         ret
 
-random:
-        push bx
+random:                                ; procedure to fill two arrays with random integers
+        push bx                        ; using xorshift algorithm
         push cx
         push dx
-        mov ah, 2ch
+        mov ah, 2ch                    ; set initial variables to current time
         int 21h
         xor ax, ax
         inc al
@@ -122,24 +128,24 @@ _loop:
         pop bx
         ret
 
-print_float:
-        push dx
+print_float:                           ; print float with one digit after point
+        push dx                        ; in memmory it's represent's as (float * 10)
         push bx
         xor dx, dx
         mov bx, 10
         div bx
-        printi ax
+        printi ax                      ; print ceil part
         printc '.'
-        printi dx
+        printi dx                      ; print fraction part
         pop bx
         pop dx
         ret
 
-print_integer:
-        push bx
-        push cx
-        push dx
-        xor cx, cx
+print_integer:                         ; print signed integer
+        push bx                        ; divide number by 10
+        push cx                        ; push reminder to stack
+        push dx                        ; untill it's 0
+        xor cx, cx                     ; then pop and print digit with macro printd
         xor dx, dx
         cmp ax, 0
         jne loop1
@@ -148,8 +154,8 @@ print_integer:
 loop1:
         cmp ax, 0
         jge skp
-        neg ax
-        printc '-'
+        neg ax                         ; if number is < 0, negate it
+        printc '-'                     ; and print minus char
 skp:
         je print1
         mov bx, 10
@@ -223,9 +229,9 @@ fillloopdiv:
         mov ax, arr1[si]
         mov bx, arr2[si]
         mov dx, 10
-        mul dx
-        xor dx, dx
-        cmp bx, 0
+        mul dx                         ; store float in array as (nu * 10) / de
+        xor dx, dx                     ; for easy storing in memmory
+        cmp bx, 0                      ; and printing
         jne _dodiv
         mov ax, 0
         jmp _nodiv
