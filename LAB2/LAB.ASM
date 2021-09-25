@@ -137,13 +137,13 @@ print_float:                           ; print float with one digit after point
         prints is_infinity
         jmp .end
 .notinf:
-        xor dx, dx ; round fraction part to one digit
-        mov bx, 100 ; by checing second digit after point
-        div bx ; if second digit is >=5, then increment first
-        mov cx, ax ; digit by 1
-        mov ax, dx ; if then first is 10, then print ceil part
-        xor dx, dx ; point char and 0 (zero)
-        mov bx, 10 ; other wise print it as usual
+        xor dx, dx                     ; round fraction part to one digit
+        mov bx, 100                    ; by checing second digit after point
+        div bx                         ; if second digit is >=5, then increment first
+        mov cx, ax                     ; digit by 1
+        mov ax, dx                     ; if then first is 10, then print ceil part
+        xor dx, dx                     ; point char and 0 (zero)
+        mov bx, 10                     ; other wise print it as usual
         div bx
         cmp dx, 5
         jl .L
@@ -155,7 +155,7 @@ print_float:                           ; print float with one digit after point
         printc '.'
         printd 0
         jmp .end
-.L: ; if not inc ceil or first digit
+.L:                                    ; if not inc ceil or first digit
         printi cx
         printc '.'
         printi ax                      ; print fraction part
