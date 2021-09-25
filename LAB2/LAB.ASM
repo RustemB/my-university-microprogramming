@@ -4,7 +4,7 @@
         %define N 5
         %endif
 
-        %define Inf (99*99)
+        %define Inf 0xffff
 
         %macro printi 1                ; prints integer in `ax'
         push ax
@@ -130,19 +130,35 @@ random:                                ; procedure to fill two arrays with rando
         ret
 
 print_float:                           ; print float with one digit after point
-        push dx                        ; in memmory it's represent's as (float * 10)
-        push bx                        ; 9801 used to Infinity (Inf), as it can't be this value in this task
-        cmp ax, Inf                    ; max value can be = 99.0 (990)
-        jne .notinf
+        push dx                        ; in memmory it's represent's as (float * 100)
+        push bx                        ; 0xFFFF used as Infinity (Inf), as it can't be this value in this task
+        cmp ax, Inf                    ; max value can be 99.0 (9900)
+        jne .notinf                    ; 99 is max possible value, 0 is minimal
         prints is_infinity
         jmp .end
 .notinf:
-        xor dx, dx
-        mov bx, 10
+        xor dx, dx ; round fraction part to one digit
+        mov bx, 100 ; by checing second digit after point
+        div bx ; if second digit is >=5, then increment first
+        mov cx, ax ; digit by 1
+        mov ax, dx ; if then first is 10, then print ceil part
+        xor dx, dx ; point char and 0 (zero)
+        mov bx, 10 ; other wise print it as usual
         div bx
-        printi ax                      ; print ceil part
+        cmp dx, 5
+        jl .L
+        inc ax
+        cmp ax, 10
+        jne .L
+        inc cx
+        printi cx
         printc '.'
-        printi dx                      ; print fraction part
+        printd 0
+        jmp .end
+.L: ; if not inc ceil or first digit
+        printi cx
+        printc '.'
+        printi ax                      ; print fraction part
 .end:
         pop bx
         pop dx
@@ -235,8 +251,8 @@ div_arrs:
 .fillloop:
         mov ax, arr1[si]
         mov bx, arr2[si]
-        mov dx, 10
-        mul dx                         ; store float in array as (nu * 10) / de
+        mov dx, 100
+        mul dx                         ; store float in array as (nu * 100) / de
         xor dx, dx                     ; for easy storing in memmory
         cmp bx, 0                      ; and printing
         jne .dodiv
