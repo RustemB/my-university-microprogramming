@@ -169,12 +169,12 @@ print_integer:                         ; print signed integer
         push dx                        ; untill it's 0
         xor cx, cx                     ; then pop and print digit with macro printd
         xor dx, dx
-        cmp ax, 0
+        test ax, ax
         jne .loop
         printd 0
         jmp .exit
 .loop:
-        cmp ax, 0
+        test ax, ax
         jge .skip
         neg ax                         ; if number is < 0, negate it
         printc '-'                     ; and print minus char
@@ -247,7 +247,7 @@ div_arrs:
         mov dx, 100
         mul dx                         ; store float in array as (nu * 100) / de
         xor dx, dx                     ; for easy storing in memmory
-        cmp bx, 0                      ; and printing
+        test bx, bx                    ; and printing
         jne .dodiv
         mov ax, Inf
         jmp .nodiv
