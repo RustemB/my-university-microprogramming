@@ -7,20 +7,18 @@
         %define Inf 0xffff
 
         %macro printi 1                ; prints integer in `ax'
-        push ax
+        pusha
         mov ax, %1
         call print_integer
-        pop ax
+        popa
         %endmacro
 
         %macro printa 1-2 _integer     ; prints array in `bx'
-        push bx
-        push dx
+        pusha
         mov bx, %1
         mov dx, print%[%2]
         call print_arr
-        pop dx
-        pop bx
+        popa
         %endmacro
 
         org 100h
@@ -86,9 +84,7 @@ print_arr:                             ; function to print array
         ret
 
 random:                                ; procedure to fill two arrays with random integers
-        push bx                        ; using xorshift algorithm
-        push cx
-        push dx
+        pusha                        ; using xorshift algorithm
         mov ah, 2ch                    ; set initial variables to current time
         int 21h
         xor ax, ax
@@ -121,15 +117,13 @@ random:                                ; procedure to fill two arrays with rando
         cmp ah, 0
         jnz .loop
 
-        pop dx
-        pop cx
-        pop bx
+        popa
         ret
 
 print_float:                           ; print float with one digit after point
-        push cx
-        push dx                        ; in memmory it's represent's as (float * 100)
-        push bx                        ; 0xFFFF used as Infinity (Inf), as it can't be this value in this task
+        pusha
+                                ; in memmory it's represent's as (float * 100)
+                                ; 0xFFFF used as Infinity (Inf), as it can't be this value in this task
         cmp ax, Inf                    ; max value can be 99.0 (9900)
         jne .notinf                    ; 99 is max possible value, 0 is minimal
         prints is_infinity
@@ -158,15 +152,13 @@ print_float:                           ; print float with one digit after point
         printc '.'
         printi ax                      ; print fraction part
 .end:
-        pop bx
-        pop dx
-        pop cx
+        popa
         ret
 
 print_integer:                         ; print signed integer
-        push bx                        ; divide number by 10
-        push cx                        ; push reminder to stack
-        push dx                        ; untill it's 0
+        pusha                        ; divide number by 10
+                                ; push reminder to stack
+                                ; untill it's 0
         xor cx, cx                     ; then pop and print digit with macro printd
         xor dx, dx
         test ax, ax
@@ -194,9 +186,7 @@ print_integer:                         ; print signed integer
         dec cx
         jmp .print
 .exit:
-        pop dx
-        pop cx
-        pop bx
+        popa
         ret
 
 sum_arrs:

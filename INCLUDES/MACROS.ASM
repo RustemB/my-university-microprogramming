@@ -1,34 +1,28 @@
         %macro prints 1                ; print string
-        push dx
-        push ax
+        pusha
         mov dx, %1
         mov ah, 9
         int 21h
-        pop ax
-        pop dx
+        popa
         %endmacro
 
         %macro printc 1-*              ; print char
-        push dx
-        push ax
+        pusha
         %rep %0
         mov dl, %1
         mov ah, 2
         int 21h
         %rotate 1
         %endrep
-        pop ax
-        pop dx
+        popa
         %endmacro
 
         %macro printd 1                ; print decimal digit
-        push dx
-        push ax
+        pusha
         mov dl, %1
         add dl, 30h
         printc dl
-        pop ax
-        pop dx
+        popa
         %endmacro
 
         %macro printnl 0               ; print newline
