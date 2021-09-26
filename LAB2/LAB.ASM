@@ -69,19 +69,16 @@ start:
         exit
 
 print_arr:                             ; function to print array
-        mov al, N                      ; count of elems in array (`n')
+        mov cx, N                      ; count of elems in array (`n')
         xor si, si                     ; index (`i')
         printc '['
 .loop:
-        dec al                         ; n--
-        push ax
+        dec cx                         ; n--
         mov ax, bx[si]                 ; print element
         call dx                        ; with provided function
-        pop ax
         inc si                         ; i++
         inc si                         ; (we use word size)
-        cmp al, 0                      ; if it's last element
-        jz .endarr                     ; we do not print comma and space
+        jcxz .endarr                   ; if it's last element we do not print comma and space
         printc 44, 32                  ; comma + space
         jmp .loop
 .endarr:
@@ -130,6 +127,7 @@ random:                                ; procedure to fill two arrays with rando
         ret
 
 print_float:                           ; print float with one digit after point
+        push cx
         push dx                        ; in memmory it's represent's as (float * 100)
         push bx                        ; 0xFFFF used as Infinity (Inf), as it can't be this value in this task
         cmp ax, Inf                    ; max value can be 99.0 (9900)
@@ -162,6 +160,7 @@ print_float:                           ; print float with one digit after point
 .end:
         pop bx
         pop dx
+        pop cx
         ret
 
 print_integer:                         ; print signed integer
@@ -202,53 +201,47 @@ print_integer:                         ; print signed integer
 
 sum_arrs:
         xor si, si
-        xor cx, cx
-.fillloop:
+        mov cx, N
+.loop:
         mov ax, arr1[si]
         mov bx, arr2[si]
         add ax, bx
         mov arr_res[si], ax
         inc si
         inc si
-        inc cx
-        cmp cx, N
-        jne .fillloop
+        loop .loop
         ret
 
 sub_arrs:
         xor si, si
-        xor cx, cx
-.fillloop:
+        mov cx, N
+.loop:
         mov ax, arr1[si]
         mov bx, arr2[si]
         sub ax, bx
         mov arr_res[si], ax
         inc si
         inc si
-        inc cx
-        cmp cx, N
-        jne .fillloop
+        loop .loop
         ret
 
 mul_arrs:
         xor si, si
-        xor cx, cx
-.fillloop:
+        mov cx, N
+.loop:
         mov ax, arr1[si]
         mov bx, arr2[si]
         mul bx
         mov arr_res[si], ax
         inc si
         inc si
-        inc cx
-        cmp cx, N
-        jne .fillloop
+        loop .loop
         ret
 
 div_arrs:
         xor si, si
-        xor cx, cx
-.fillloop:
+        mov cx, N
+.loop:
         mov ax, arr1[si]
         mov bx, arr2[si]
         mov dx, 100
@@ -264,9 +257,7 @@ div_arrs:
         mov arr_res[si], ax
         inc si
         inc si
-        inc cx
-        cmp cx, N
-        jne .fillloop
+        loop .loop
         ret
 
         section .data
