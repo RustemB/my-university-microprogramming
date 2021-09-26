@@ -4,8 +4,9 @@
 
         section .text
         prints msg
-        exit 0
+        printnl
+        exit
 
         section .data
 msg:
-        db 'Hello, World!', 10, 13, '$'
+        db 'Hello, World!$'
