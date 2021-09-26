@@ -84,7 +84,7 @@ print_arr:                             ; function to print array
         ret
 
 random:                                ; procedure to fill two arrays with random integers
-        pusha                        ; using xorshift algorithm
+        pusha                          ; using xorshift algorithm
         mov ah, 2ch                    ; set initial variables to current time
         int 21h
         xor ax, ax
@@ -122,12 +122,10 @@ random:                                ; procedure to fill two arrays with rando
 
 print_float:                           ; print float with one digit after point
         pusha
-                                ; in memmory it's represent's as (float * 100)
-                                ; 0xFFFF used as Infinity (Inf), as it can't be this value in this task
-        cmp ax, Inf                    ; max value can be 99.0 (9900)
-        jne .notinf                    ; 99 is max possible value, 0 is minimal
-        prints is_infinity
-        jmp .end
+        cmp ax, Inf                    ; in memmory it's represent's as (float * 100)
+        jne .notinf                    ; 0xFFFF used as Infinity (Inf), as it can't be this value in this task
+        prints is_infinity             ; max value can be 99.0 (9900)
+        jmp .end                       ; 99 is max possible value, 0 is minimal
 .notinf:
         xor dx, dx                     ; round fraction part to one digit
         mov bx, 100                    ; by checing second digit after point
@@ -156,12 +154,10 @@ print_float:                           ; print float with one digit after point
         ret
 
 print_integer:                         ; print signed integer
-        pusha                        ; divide number by 10
-                                ; push reminder to stack
-                                ; untill it's 0
-        xor cx, cx                     ; then pop and print digit with macro printd
-        xor dx, dx
-        test ax, ax
+        pusha                          ; divide number by 10
+        xor cx, cx                     ; push reminder to stack
+        xor dx, dx                     ; untill it's 0
+        test ax, ax                    ; then pop and print digit with macro printd
         jne .loop
         printd 0
         jmp .exit
