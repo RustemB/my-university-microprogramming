@@ -6,14 +6,14 @@
 
         %define Inf 0xffff
 
-        %macro printi 1                ; prints integer in `ax'
+        %macro printi 1                ; prints integer
         pusha
         mov ax, %1
         call print_integer
         popa
         %endmacro
 
-        %macro printa 1-2 _integer     ; prints array in `bx'
+        %macro printa 1-2 _integer     ; prints array
         pusha
         mov bx, %1
         mov dx, print%[%2]
