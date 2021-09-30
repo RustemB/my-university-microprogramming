@@ -8,9 +8,9 @@
 
         %macro printc 1-*              ; print char
         pusha
+        mov ah, 2
         %rep %0
         mov dl, %1
-        mov ah, 2
         int 21h
         %rotate 1
         %endrep
