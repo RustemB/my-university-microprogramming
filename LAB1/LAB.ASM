@@ -9,4 +9,4 @@
 
         section .data
 msg:
-        db 'Hello, World!$'
+        db 'Меня зовут Рустем!$'
